@@ -1,0 +1,38 @@
+1. Cách kiểm tra một biến x cho trước là function, array, number, string, undefined
+Để kiểm tra 1 biến cho trước là các kiểu dữ liệu nào ta có thể sử dụng typeof
+Còn 1 cách để kiểm tra biến x là function hay không, ta có thể sử dụng instanceof Function
+
+
+2. Tìm hiểu về Event loop, giải thích tại sao đoạn code sau chữ Một lại hiện sau chữ Hai
+```
+setTimeout(function() {
+console.log('Một');
+}, 0);
+function second() {
+console.log('Hai');
+}
+second();
+```
+Giải thích: mô tả cụ thể nằm ở mô hình sau: http://latentflip.com/loupe/?code=DQoNCg0Kc2V0VGltZW91dChmdW5jdGlvbiAoKSB7DQogIGNvbnNvbGUubG9nKCdNb3QnKTsNCn0sIDApOw0KZnVuY3Rpb24gc2F5SGFpKCkgew0KICBjb25zb2xlLmxvZygnSGFpJyk7DQp9DQpzYXlIYWkoKTsNCg%3D%3D!!!PGJ1dHRvbj5DbGljayBtZSE8L2J1dHRvbj4%3D
+- Đầu tiên ta cần nắm được cách JS runtime hoạt động, nắm được Call Stack là gì, Web Apis, Callback Queue là gì?
+- Tiếp đến đọc code: ta đã biết JS là ngôn ngữ đơn luồng bất đồng bộ,Sự bất đồng bộ trong javascript xuất hiện khi nó thao tác với các WebAPI (ajax, setTimeout(), … ).
+Chạy code từ trên xuống dưới:
+- hàm setTimeout được đọc trước, sau đó sẽ đưa vào Web Apis chờ xử lý, sau đó code tiếp tục đọc tới hàm second() sau đó in ra 'Hai' trước, lúc này
+bên Web Apis có counter đã chạy xong sau 0s sẽ đưa hàm xuống Callback để chờ xử lý
+- Tiếp đến khi Call Stack trống, hàm từ Callback Queue nhờ vào eventloops sẽ được đưa vào Call Stack theo cơ chế FIFO, và chạy nội dung hàm, in ra 'Một'
+- Vậy nên chữ 'Một' sẽ in ra sau chữ 'Hai'
+
+
+3. Tìm hiểu về deep copy và shallow copy trong JS. Giải thích kết quả của đoạn code sau.
+```
+const macbooks = ['macbook2015', { model: 'macbook2014' }, 'macbook2017'];
+const apples = [...macbooks];
+apples[0] = 'air';
+apples[1].model = 'm1';
+console.log(macbooks) // ['macbook2015', { model: 'm1' }, 'macbook2017']
+console.log(apples) // ['air', { model: 'm1' }, 'macbook2017']
+```
+Giải thích:
+- Đầu tiên macbooks là array, là kiểu dữ liệu tham chiếu, trỏ về địa chỉ 1 vùng nhớ trên máy tính
+- Tiếp theo, việc sử dụng ... là spread operator, 1 cách deep copying data, lúc này mảng apple sẽ trỏ tới địa chỉ 1 vùng nhớ mới trên máy tính, có giá trị = với giá trị ở các vùng nhớ của macbooks ( tuy nhiên là 2 vùng nhớ hoàn toàn khác nhau)
+- Sau khi copy, data của apples dù giống hệt nhưng đang trỏ về địa chỉ ô nhớ khác, k liên quan tới địa chỉ ô nhớ cũ của macbooks, chính vì vậy khi thay đổi thông tin và in ra thì chúng hoàn toàn k liên quan và ảnh hưởng gì tới nhau
