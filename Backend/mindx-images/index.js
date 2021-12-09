@@ -18,9 +18,11 @@ async function main() {
 
   app.use(express.json());
 
-  app.use("api/posts", PostRouter);
-  app.use("api/comments", CommentRouter);
-  app.use("api/auth", AuthRouter);
+
+  // Chú ý phần đường dẫn cần có /
+  app.use("/api/posts", PostRouter);
+  app.use("/api/comments", CommentRouter);
+  app.use("/api/auth", AuthRouter);
 
   app.listen(9000, (err) => {
     if (err) throw err;
